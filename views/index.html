@@ -1,0 +1,76 @@
+{{ block "index" . }}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.11"
+      integrity="sha384-0gxUXCCR8yv9FM2b+U3FDbsKthCI66oH5IA9fHppQq9DDMHuMauqq1ZHBpJxQ0J0"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              clifford: "#da373d",
+            },
+          },
+        },
+      };
+    </script>
+    <title>Document</title>
+  </head>
+
+  <body class="container py-12 px-4 mx-auto space-y-8">
+    <ul
+      class="space-y-4 p-4 rounded bg-teal-50 border border-teal-300 text-teal-950"
+      id="todos"
+    >
+      {{ range .Todos }} {{ template "todo" . }} {{ end }}
+    </ul>
+
+    <form
+      hx-post="/todos"
+      hx-target="#todos"
+      hx-swap="beforeend"
+      class="flex gap-2 items-end"
+    >
+      <div class="flex flex-col gap-1 flex-1">
+        <label for="description">Description</label>
+        <input
+          type="text"
+          name="description"
+          class="h-10 border border-slate-100"
+          }
+        />
+      </div>
+      <button type="submit" class="h-10 rounded px-8 bg-teal-500 text-teal-50">
+        Add
+      </button>
+    </form>
+  </body>
+</html>
+{{ end }} {{ block "todo" . }}
+<li
+  class="p-2 border-b rounded border-teal-100 flex items-center justify-between"
+>
+  <label> {{ .Description }} </label>
+  <input
+    type="checkbox"
+    name="done"
+    hx-post="/todos/{{ .Id }}"
+    {{
+    if
+    .Done
+    }}
+    checked
+    {{
+    end
+    }}
+  />
+</li>
+{{ end }}
